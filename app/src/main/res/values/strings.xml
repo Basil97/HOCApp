@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">HOC App</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">MSP TechClub SFE</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="connect">Connect</string>
+    <string name="send">Send</string>
+    <string-array name="motion_spinner_data">
+        <item>Forward</item>
+        <item>Backward</item>
+        <item>Right</item>
+        <item>Left</item>
+    </string-array>
+    <string-array name="handle_spinner_data">
+        <item>Open</item>
+        <item>Close</item>
+    </string-array>
+</resources>
