@@ -31,7 +31,7 @@ public class MyItemDragListener implements View.OnDragListener {
                     changeLayout(view, newLayout);
                     changeLayout(localState, newLayout);
                 }else {
-                    ViewGroup localParent = (ViewGroup) localState.getParent();
+                    //ViewGroup localParent = (ViewGroup) localState.getParent();
                     int index = parent.indexOfChild(view);
                     //if (parent == localParent && index > parent.indexOfChild(localParent)) index--;
                     changeLayout(localState, (LinearLayout) parent, index + 1);

@@ -1,10 +1,18 @@
 package com.mspsfe.hocapp;
 
+import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.ClipData;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,10 +26,24 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
+
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private BluetoothAdapter btAdapter;
+    private ConnectionThread connectionThread;
+
+    private static final UUID BT_MODULE_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    private static final int CONNECTION_STATUS = 2;
+    private static final int CODE = 123;
+    private Handler handler;
+
+    @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +71,20 @@ public class MainActivity extends AppCompatActivity
 
         RelativeLayout mainLayout = findViewById(R.id.mainLayout);
         mainLayout.setOnDragListener(new MyLayoutDragListener());
+
+        btAdapter = BluetoothAdapter.getDefaultAdapter();
+        handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                if (msg.what == CONNECTION_STATUS) {
+                    if (msg.arg1 == 1) {
+                        Toast.makeText(MainActivity.this, "Connected to " + msg.obj, Toast.LENGTH_LONG).show();
+                    }else {
+                        Toast.makeText(MainActivity.this, "Connection Failed", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        };
     }
 
     @Override
@@ -78,7 +114,12 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         switch (id) {
             case R.id.connect:
-                //TODO connecting to a Bluetooth
+                if (!btAdapter.isEnabled()) {
+                    Toast.makeText(this, "Turn Bluetooth ON first", Toast.LENGTH_LONG).show();
+                    break;
+                }
+                Intent intent = new Intent(this, BluetoothConnectActivity.class);
+                startActivityForResult(intent, CODE);
                 return true;
 
             case R.id.send:
@@ -89,10 +130,69 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CODE) {
+            if (resultCode == RESULT_OK) {
+                String device = data.getStringExtra("Device");
+                String name = device.substring(0, device.length() - 18);
+                String address = device.substring(device.length() - 17);
+                connectToBluetooth(name, address);
+            }
+        }
+    }
+
+    private static final String CONNECTION_TAG = "BTSocket Creation";
+    private void connectToBluetooth(final String name, final String address) {
+        Toast.makeText(this, "Connecting to " + name, Toast.LENGTH_LONG).show();
+        new Thread() {
+            BluetoothSocket btSocket;
+            public void run() {
+                boolean failed = false;
+                BluetoothDevice device = btAdapter.getRemoteDevice(address);
+                try {
+                    btSocket = createBluetoothSocket(device);
+                } catch (IOException e) {
+                    Log.e(CONNECTION_TAG, "ERROR creating Bluetooth Socket");
+                    failed = true;
+                }
+                try {
+                    btSocket.connect();
+                } catch (IOException e) {
+                    Log.e(CONNECTION_TAG, "ERROR connecting to socket");
+                    failed = true;
+                    try {
+                        btSocket.close();
+                        handler.obtainMessage(CONNECTION_STATUS, -1, -1)
+                                .sendToTarget();
+                    } catch (IOException e1) {
+                        Log.e(CONNECTION_TAG, "ERROR closing socket");
+                    }
+                }
+                if (!failed) {
+                    connectionThread = new ConnectionThread(btSocket);
+                    handler.obtainMessage(CONNECTION_STATUS, 1, -1, name)
+                            .sendToTarget();
+                }
+            }
+        }.start();
+    }
+
+    private BluetoothSocket createBluetoothSocket(BluetoothDevice device) throws IOException {
+        try {
+            Method method = device.getClass().getMethod("createInsecureRfcommSocketToServiceRecord", UUID.class);
+            return (BluetoothSocket)method.invoke(device, BT_MODULE_UUID);
+        } catch (Exception e) {
+            Log.e(CONNECTION_TAG, "ERROR creating Bluetooth Socket");
+        }
+        return device.createRfcommSocketToServiceRecord(BT_MODULE_UUID);
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
+
         int id = item.getItemId();
 
         switch (id) {
