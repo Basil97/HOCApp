@@ -13,7 +13,7 @@ public class ConnectionThread {
 
     private static final String TAG = "Connection Thread";
 
-    public ConnectionThread(BluetoothSocket mSocket) {
+    ConnectionThread(BluetoothSocket mSocket) {
         this.mSocket = mSocket;
 
         OutputStream tempOut = null;
@@ -26,12 +26,19 @@ public class ConnectionThread {
         mOutStream = tempOut;
     }
 
-    public void write(String data) {
+    private void write(String data) {
         byte[] bytes = data.getBytes();
         try {
             mOutStream.write(bytes);
         } catch (IOException e) {
             Log.e(TAG, "ERROR sending data to Bluetooth!");
+        }
+    }
+
+    public void write(char[] data) {
+        for (char ch : data) {
+            String string = String.valueOf(ch);
+            write(string);
         }
     }
 

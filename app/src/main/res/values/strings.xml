@@ -1,12 +1,17 @@
 <resources>
     <string name="app_name">HOC App</string>
+    <string name="label">Bluetooth Devices</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">MSP TechClub SFE</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="connect">Connect</string>
     <string name="send">Send</string>
+    <string name="start">Start</string>
+    <string name="handle">Handle</string>
+    <string name="move">Move</string>
+    <string name="loop">Loop</string>
+    <string name="condition">Condition</string>
     <string-array name="motion_spinner_data">
         <item>Forward</item>
         <item>Backward</item>

@@ -7,33 +7,21 @@
         <item
             android:id="@+id/nav_move"
             android:icon="@drawable/ic_open_with_black_24dp"
-            android:title="Move" />
+            android:title="@string/move" />
         <item
             android:id="@+id/nav_handle"
             android:icon="@drawable/ic_pan_tool_black_24dp"
-            android:title="Handle" />
+            android:title="@string/handle" />
         <item
+            android:enabled="false"
             android:id="@+id/nav_loop"
             android:icon="@drawable/ic_loop_black_24dp"
-            android:title="Loop" />
+            android:title="@string/loop" />
         <item
             android:enabled="false"
             android:id="@+id/nav_condition"
-            android:icon="@drawable/ic_vertical_align_bottom_black_24dp"
-            android:title="Condition" />
+            android:icon="@drawable/ic_device_hub_black_24dp"
+            android:title="@string/condition" />
     </group>
-
-    <item android:title="Communicate">
-        <menu>
-            <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
-        </menu>
-    </item>
 
 </menu>

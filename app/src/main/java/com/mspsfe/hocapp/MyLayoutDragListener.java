@@ -32,7 +32,9 @@ public class MyLayoutDragListener implements View.OnDragListener {
                 if (view != localState.getParent()) {
                     changeLayout(localState, (RelativeLayout) view);
                 }
+                if (lastX < localState.getWidth()/2) lastX = localState.getWidth()/2;
                 localState.setX(lastX - localState.getWidth()/2);
+                if (lastY < localState.getHeight()/2) lastY = localState.getHeight()/2 + 5;
                 localState.setY(lastY - localState.getHeight()/2);
                 localState.setVisibility(View.VISIBLE);
                 return true;

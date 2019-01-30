@@ -11,17 +11,19 @@
     android:id="@+id/mainLayout">
 
     <TextView
+        android:id="@+id/txt_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/oval"
-        android:text="Start"
-        android:textSize="18sp"
+        android:text="@string/start"
+        android:textSize="20sp"
         android:textColor="@color/darkBlack"
         android:layout_centerHorizontal="true"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:paddingRight="10dp"
-        android:paddingLeft="10dp"
+        android:gravity="center"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingRight="15dp"
+        android:paddingLeft="15dp"
         android:layout_marginTop="10dp"/>
 
 </RelativeLayout>
